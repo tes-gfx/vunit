@@ -925,7 +925,7 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         )
         runner.run(test_cases)
 
-    def add_builtins(self, external=None):
+    def add_builtins(self, external=None, use_external_log=None):
         """
         Add vunit VHDL builtin libraries
 
@@ -935,7 +935,7 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
                              'integer': ['path/to/custom/file']
                          }.
         """
-        self._builtins.add_vhdl_builtins(external=external)
+        self._builtins.add_vhdl_builtins(external=external, use_external_log=use_external_log)
 
     def add_com(self):
         """
@@ -961,11 +961,11 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         """
         self._builtins.add("verification_components")
 
-    def add_osvvm(self):
+    def add_osvvm(self, use_vunit_log=False):
         """
         Add osvvm library
         """
-        self._builtins.add("osvvm")
+        self._builtins.add("osvvm", dict(use_vunit_log=use_vunit_log))
 
     def add_json4vhdl(self):
         """

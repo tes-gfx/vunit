@@ -13,6 +13,7 @@ use vunit_lib.integer_vector_ptr_pkg.all;
 use work.ansi_pkg.all;
 use work.string_ops.upper;
 use work.file_pkg.all;
+use work.common_log_pkg.all;
 
 package body log_handler_pkg is
 
@@ -320,8 +321,10 @@ package body log_handler_pkg is
     if log_file_name = null_file_name then
       null;
     elsif log_file_name = stdout_file_name then
-      log_to_line(l);
-      writeline(OUTPUT, l);
+      write_to_log(OUTPUT, msg, log_time, log_level_t'image(log_level), logger_name,
+      mode => get(log_handler.p_data, format_idx), str_1 => file_name,
+      val_1 => line_num, val_2 => sequence_number, val_3 => get(log_handler.p_data, use_color_idx),
+      val_4 => get_max_logger_name_length(log_handler));
     else
       log_to_line(l);
       writeline(to_file_id(get(log_handler.p_data, file_id_idx)), l);

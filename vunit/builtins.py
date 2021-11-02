@@ -130,7 +130,7 @@ class Builtins(object):
             raise RuntimeError("Verification component library only supports vhdl 2008 and later")
         self._add_files(VHDL_PATH / "verification_components" / "src" / "*.vhd")
 
-    def _add_osvvm(self):
+    def _add_osvvm(self, use_vunit_log=False):
         """
         Add osvvm library
         """
@@ -184,6 +184,10 @@ in your VUnit Git repository? You have to do this first if installing using setu
             ):
                 continue
 
+            if (bname == "common_log_pkg.vhd") and use_vunit_log:
+                library.add_source_files(VHDL_PATH / "osvvm_integration" / "*.vhd", preprocessors=[])
+                continue
+
             library.add_source_files(file_name, preprocessors=[])
 
     def _add_json4vhdl(self):
@@ -205,7 +209,7 @@ in your VUnit Git repository? You have to do this first if installing using setu
         """
         self._vunit_lib.add_source_files(VERILOG_PATH / "vunit_pkg.sv")
 
-    def add_vhdl_builtins(self, external=None):
+    def add_vhdl_builtins(self, external=None, use_external_log=None):
         """
         Add vunit VHDL builtin libraries
 
@@ -219,7 +223,6 @@ in your VUnit Git repository? You have to do this first if installing using setu
         self._add_files(VHDL_PATH / "*.vhd")
         for path in (
             "core",
-            "logging",
             "string_ops",
             "check",
             "dictionary",
@@ -227,6 +230,14 @@ in your VUnit Git repository? You have to do this first if installing using setu
             "path",
         ):
             self._add_files(VHDL_PATH / path / "src" / "*.vhd")
+
+        logging_files = glob(str(VHDL_PATH / "logging" / "src" / "*.vhd"))
+        for logging_file in logging_files:
+            if logging_file.endswith("common_log_pkg.vhd") and use_external_log:
+                self._add_files(Path(use_external_log))
+                continue
+
+            self._add_files(Path(logging_file))
 
 
 def osvvm_is_installed():
@@ -259,6 +270,7 @@ class BuiltinsAdder(object):
         """
         Add builtin with arguments
         """
+
         args = {} if args is None else args
 
         if not self._add_check(name, args):
@@ -280,6 +292,9 @@ class BuiltinsAdder(object):
 
         old_args = self._already_added[name]
         if args != old_args:
+            # TODO: Temp fix for prototype
+            if name == "osvvm":
+                return True
             raise RuntimeError(
                 f"Optional builtin {name!r} added with arguments {args!r} "
                 f"has already been added with arguments {old_args!r}"
