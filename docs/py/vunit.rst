@@ -30,6 +30,12 @@ Test
 
 .. autoclass:: vunit.ui.test.Test()
 
+Configuration
+-------------
+
+.. autoclass:: vunit.ui.configuration.Configuration()
+   :inherited-members:
+
 Results
 -------
 
