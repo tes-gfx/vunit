@@ -14,11 +14,12 @@ use work.com_types_pkg.all;
 use work.queue_pkg.all;
 use work.integer_vector_ptr_pkg.all;
 use work.string_ptr_pkg.all;
+use work.event_private_pkg.all;
 
 package com_pkg is
   -- Global predefined network. See network_t description in com_types.vhd for
   -- more information.
-  signal net : network_t := idle_network;
+  signal net : network_t := new_basic_event(com_network);
 
   -----------------------------------------------------------------------------
   -- Handling of actors
