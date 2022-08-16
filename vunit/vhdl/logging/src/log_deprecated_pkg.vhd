@@ -14,7 +14,8 @@ use std.textio.all;
 
 package log_deprecated_pkg is
   alias verbose_csv is work.log_handler_pkg.csv [return deprecated_log_format_t];
-  alias verbose is work.log_levels_pkg.trace [return log_level_t];
+  -- alias verbose is work.log_levels_pkg.trace [return log_level_t];
+  -- Removed verbose since it would collide with the verbose procedure below.
 
   -- Deprecated interface to better support legacy testbenches. Calls to this
   -- procedure will be mapped to contemporary functionality using best effort:

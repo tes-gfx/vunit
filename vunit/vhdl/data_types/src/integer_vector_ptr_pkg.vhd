@@ -91,14 +91,14 @@ package integer_vector_ptr_pkg is
     code : string
   ) return ptr_t;
 
+  alias encode_ptr_t is encode[ptr_t return string];
+  alias decode_ptr_t is decode[string return ptr_t];
+
   procedure decode (
     constant code   : string;
     variable index  : inout positive;
     variable result : out ptr_t
   );
-
-  alias encode_ptr_t is encode[ptr_t return string];
-  alias decode_ptr_t is decode[string return ptr_t];
 
   constant integer_vector_ptr_t_code_length : positive := integer_code_length;
 

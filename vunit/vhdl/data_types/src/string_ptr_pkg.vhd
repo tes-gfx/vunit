@@ -24,7 +24,7 @@ package string_ptr_pkg is
   constant null_string_ptr : string_ptr_t := (ref => -1);
 
   alias  ptr_t  is string_ptr_t;
-  alias  val_t  is character;
+  subtype val_t  is character; -- Alias seems to break things. Use subtype instead.
   alias  vec_t  is string;
   alias  vav_t  is string_access_vector_t;
   alias evav_t  is extstring_access_vector_t;
