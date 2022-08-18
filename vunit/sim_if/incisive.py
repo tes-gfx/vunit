@@ -16,7 +16,7 @@ import logging
 from ..exceptions import CompileError
 from ..ostools import write_file, file_exists
 from ..vhdl_standard import VHDL
-from . import SimulatorInterface, run_command, ListOfStringOption
+from . import SimulatorInterface, run_command, ListOfStringOption, StringOption
 from .cds_file import CDSFile
 
 LOGGER = logging.getLogger(__name__)
@@ -36,7 +36,10 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         ListOfStringOption("incisive.irun_verilog_flags"),
     ]
 
-    sim_options = [ListOfStringOption("incisive.irun_sim_flags")]
+    sim_options = [
+        ListOfStringOption("incisive.irun_sim_flags"),
+        StringOption("incisive.irun_sim_tcl")
+    ]
 
     @staticmethod
     def add_arguments(parser):
@@ -329,7 +332,7 @@ define work "{self._output_path}/libraries/work"
                 args += ["-gui"]
             else:
                 args += ["-access +r"]
-                args += ['-input "@run"']
+                args += [f'-input "{config.sim_options.get("incisive.irun_sim_tcl", "@run")}"']
 
             if config.architecture_name is None:
                 # we have a SystemVerilog toplevel:
