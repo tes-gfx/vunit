@@ -267,19 +267,19 @@ package body memory_pkg is
     --elsif address >= length(memory.p_data) then
     --  failure(memory.p_logger, verb & " address " & to_string(address) & " out of range 0 to " & to_string(length(memory.p_data)-1));
     --  return false;
---    if is_empty(memory.p_model) then
---      failure(memory.p_logger, verb & " empty memory");
---      return false;
---    elsif check_permissions and get_permissions(memory, address) = no_access then
---      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (no_access)");
---      return false;
---    elsif check_permissions and reading and get_permissions(memory, address) = write_only then
---      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (write_only)");
---      return false;
---    elsif check_permissions and not reading and get_permissions(memory, address) = read_only then
---      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (read_only)");
---      return false;
---    end if;
+    if is_empty(memory.p_model) then
+      failure(memory.p_logger, verb & " empty memory");
+      return false;
+    elsif check_permissions and get_permissions(memory, address) = no_access then
+      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (no_access)");
+      return false;
+    elsif check_permissions and reading and get_permissions(memory, address) = write_only then
+      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (write_only)");
+      return false;
+    elsif check_permissions and not reading and get_permissions(memory, address) = read_only then
+      failure(memory.p_logger, verb & " " & describe_address(memory, address) & " without permission (read_only)");
+      return false;
+    end if;
     return true;
   end;
 
