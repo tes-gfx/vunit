@@ -81,6 +81,13 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         """
         Returns True when this simulator supports VHDL 2008 contexts
         """
+        return True
+
+    @classmethod
+    def supports_vhdl_package_generics(cls):
+        """
+        Returns True when this simulator supports VHDL package generics
+        """
         return False
 
     def __init__(  # pylint: disable=too-many-arguments
