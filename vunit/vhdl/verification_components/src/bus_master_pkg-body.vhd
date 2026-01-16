@@ -102,7 +102,7 @@ package body bus_master_pkg is
     push_std_ulogic_vector(request_msg, full_address);
     push_integer(request_msg, burst_length);
     for i in 0 to burst_length-1 loop
-      full_data(bus_handle.p_data_length-1 downto 0) := pop(data);
+      full_data(bus_handle.p_data_length-1 downto 0) := std_logic_vector(pop_std_ulogic_vector(data));
       push_std_ulogic_vector(request_msg, full_data);
     end loop;
     send(net, bus_handle.p_actor, request_msg);
