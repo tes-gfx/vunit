@@ -102,7 +102,7 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         else:
             self._cdslib = str(Path(cdslib).resolve())
         self._hdlvar = hdlvar
-        self._cds_root_irun = self.find_cds_root_irun()
+        self._cds_root_irun = self.find_cds_root_irun().decode("utf-8")
         self._create_cdslib()
 
     def find_cds_root_irun(self):
