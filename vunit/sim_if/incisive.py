@@ -207,7 +207,7 @@ define work "{self._output_path}/libraries/work"
             args += ["-messages"]
             args += ["-libverbose"]
         args += source_file.compile_options.get("incisive.irun_vhdl_flags", [])
-        args += [f'-nclibdirname "{Path(source_file.library.directory).parent!s}"']
+        args += [f'-xmlibdirname "{Path(source_file.library.directory).parent!s}"']
         args += [f"-makelib {source_file.library.directory!s}"]
         args += [f'"{source_file.name!s}"']
         args += ["-endlib"]
@@ -251,7 +251,7 @@ define work "{self._output_path}/libraries/work"
         for key, value in source_file.defines.items():
             val = value.replace('"', '\\"')
             args += [f"-define {key!s}={val!s}"]
-        args += [f'-nclibdirname "{Path(source_file.library.directory).parent!s}"']
+        args += [f'-xmlibdirname "{Path(source_file.library.directory).parent!s}"']
         args += [f"-makelib {source_file.library.name!s}"]
         args += [f'"{source_file.name!s}"']
         args += ["-endlib"]
@@ -327,7 +327,7 @@ define work "{self._output_path}/libraries/work"
             args += ["-ncerror EVBSTR"]  # promote to error: "bad string literal in generic association"
             args += ["-ncerror EVBNAT"]  # promote to error: "bad natural literal in generic association"
             args += ["-work work"]
-            args += [f'-nclibdirname "{Path(self._output_path) / "libraries"!s}"']  # @TODO: ugly
+            args += [f'-xmlibdirname "{Path(self._output_path) / "libraries"!s}"']  # @TODO: ugly
             args += config.sim_options.get("incisive.irun_sim_flags", [])
             args += [f'-cdslib "{self._cdslib!s}"']
             args += self._hdlvar_args()
