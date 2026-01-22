@@ -161,13 +161,13 @@ define work "{self._output_path}/libraries/work"
         Convert standard to format of irun command line flag
         """
         if vhdl_standard == VHDL.STD_2002:
-            return "-v200x -extv200x"
+            return "-IEEE2008 -v200x -extv200x"
 
         if vhdl_standard == VHDL.STD_2008:
-            return "-v200x -extv200x"
+            return "-IEEE2008 -v200x -extv200x"
 
         if vhdl_standard == VHDL.STD_1993:
-            return "-v93"
+            return "-IEEE2008 -v200x"
 
         raise ValueError(f"Invalid VHDL standard {vhdl_standard!s}")
 
