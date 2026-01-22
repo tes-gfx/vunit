@@ -300,6 +300,7 @@ define work "{self._output_path}/libraries/work"
                 args += ["-elaborate"]
             args += ["-nocopyright"]
             args += ["-licqueue"]
+            args += ["-IEEE2008"]
             # args += ['-dumpstack']
             # args += ['-gdbsh']
             # args += ['-rebuild']
