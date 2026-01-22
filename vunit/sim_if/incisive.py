@@ -310,9 +310,9 @@ define work "{self._output_path}/libraries/work"
             args += ["-nowarn WRMNZD"]
             args += ["-nowarn DLCPTH"]  # "cds.lib Invalid path"
             args += ["-nowarn DLCVAR"]  # "cds.lib Invalid environment variable ''."
-            args += ["-ncerror EVBBOL"]  # promote to error: "bad boolean literal in generic association"
-            args += ["-ncerror EVBSTR"]  # promote to error: "bad string literal in generic association"
-            args += ["-ncerror EVBNAT"]  # promote to error: "bad natural literal in generic association"
+            args += ["-xmerror EVBBOL"]  # promote to error: "bad boolean literal in generic association"
+            args += ["-xmerror EVBSTR"]  # promote to error: "bad string literal in generic association"
+            args += ["-xmerror EVBNAT"]  # promote to error: "bad natural literal in generic association"
             args += ["-work work"]
             args += [f'-xmlibdirname "{Path(self._output_path) / "libraries"!s}"']  # @TODO: ugly
             args += config.sim_options.get("incisive.irun_sim_flags", [])
