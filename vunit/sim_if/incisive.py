@@ -370,7 +370,8 @@ define work "{self._output_path}/libraries/work"
             else:
                 args += ["-access +r"]
                 if config.sim_options.get("incisive.init_files.before_run", []):
-                    args += [f"-input {config.sim_options.get("incisive.init_files.before_run", [])}"]
+                    for f in config.sim_options.get("incisive.init_files.before_run", []):
+                        args += [f"-input {f}"]
                 args += ['-input "@run"']
 
             if config.architecture_name is None:
