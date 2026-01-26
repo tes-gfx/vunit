@@ -142,6 +142,14 @@ class Builtins(object):
         ]:
             LOGGER.warning(message)
             return None
+
+        if self._simulator_class.name == "incisive":
+            major, minor = self._simulator_class.get_xrun_version()
+            if major < 25 and library_name == "osvvm":
+                self._vunit_obj.add_external_library(library_name,
+                                                     "/opt/cadence/XCELIUM2109/tools.lnx86/inca/files/OSVVM")
+                return None
+
         return self._vunit_obj.add_library(library_name)
 
     def _add_osvvm(self):

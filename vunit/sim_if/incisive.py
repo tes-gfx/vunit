@@ -13,6 +13,7 @@ from os.path import relpath
 import os
 import subprocess
 import logging
+import re
 from ..exceptions import CompileError
 from ..ostools import write_file, file_exists
 from ..vhdl_standard import VHDL
@@ -36,7 +37,10 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         ListOfStringOption("incisive.irun_verilog_flags"),
     ]
 
-    sim_options = [ListOfStringOption("incisive.irun_sim_flags")]
+    sim_options = [
+        ListOfStringOption("incisive.irun_sim_flags"),
+        ListOfStringOption("incisive.init_files.before_run")
+    ]
 
     @staticmethod
     def add_arguments(parser):
@@ -74,13 +78,36 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         """
         Find incisive simulator from PATH environment variable
         """
-        return cls.find_toolchain(["irun"])
+        return cls.find_toolchain(["xrun"])
+
+    @staticmethod
+    def get_xrun_version():
+        try:
+            result = subprocess.run(
+                ["xrun", "-version"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return None, None
+
+        # Example line: "TOOL:   xrun    21.09-s007"
+        match = re.search(r"xrun\s+(\d+)\.(\d+)", result.stdout)
+        if not match:
+            return None, None
+
+        major = int(match.group(1))
+        minor = int(match.group(2))
+
+        return major, minor
 
     def __init__(  # pylint: disable=too-many-arguments
         self, prefix, output_path, *, gui=False, log_level=None, cdslib=None, hdlvar=None
     ):
         SimulatorInterface.__init__(self, output_path, gui)
         self._prefix = prefix
+        self._version_major, self._version_minor = self.get_xrun_version()
         self._libraries = []
         self._log_level = log_level
         if cdslib is None:
@@ -95,7 +122,7 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         """
         Finds irun cds root
         """
-        return subprocess.check_output([str(Path(self._prefix) / "cds_root"), "irun"]).splitlines()[0].decode()
+        return subprocess.check_output([str(Path(self._prefix) / "cds_root"), "xrun"]).splitlines()[0].decode()
 
     def find_cds_root_virtuoso(self):
         """
@@ -155,19 +182,27 @@ define work "{self._output_path}/libraries/work"
 
         raise CompileError
 
-    @staticmethod
-    def _vhdl_std_opt(vhdl_standard):
+    def _vhdl_std_opt(self, vhdl_standard):
         """
         Convert standard to format of irun command line flag
         """
         if vhdl_standard == VHDL.STD_2002:
-            return "-IEEE2008 -v200x -extv200x"
+            opts = "-v200x -extv200x"
+            if self._version_major > 24:
+                opts += " -IEEE2008"
+            return opts
 
         if vhdl_standard == VHDL.STD_2008:
-            return "-IEEE2008 -v200x -extv200x"
+            opts = "-v200x -extv200x"
+            if self._version_major > 24:
+                opts += " -IEEE2008"
+            return opts
 
         if vhdl_standard == VHDL.STD_1993:
-            return "-IEEE2008 -v200x"
+            opts = ""
+            if self._version_major > 24:
+                opts += "-v200x -IEEE2008"
+            return opts
 
         raise ValueError(f"Invalid VHDL standard {vhdl_standard!s}")
 
@@ -175,7 +210,7 @@ define work "{self._output_path}/libraries/work"
         """
         Returns command to compile a VHDL file
         """
-        cmd = str(Path(self._prefix) / "irun")
+        cmd = str(Path(self._prefix) / "xrun")
         args = []
         args += ["-compile"]
         args += ["-nocopyright"]
@@ -205,7 +240,7 @@ define work "{self._output_path}/libraries/work"
         """
         Returns commands to compile a Verilog file
         """
-        cmd = str(Path(self._prefix) / "irun")
+        cmd = str(Path(self._prefix) / "xrun")
         args = []
         args += ["-compile"]
         args += ["-nocopyright"]
@@ -294,13 +329,14 @@ define work "{self._output_path}/libraries/work"
             steps = ["elaborate", "simulate"]
 
         for step in steps:
-            cmd = str(Path(self._prefix) / "irun")
+            cmd = str(Path(self._prefix) / "xrun")
             args = []
             if step == "elaborate":
                 args += ["-elaborate"]
             args += ["-nocopyright"]
             args += ["-licqueue"]
-            args += ["-IEEE2008"]
+            if self._version_major > 24:
+                args += ["-IEEE2008"]
             # args += ['-dumpstack']
             # args += ['-gdbsh']
             # args += ['-rebuild']
@@ -333,6 +369,8 @@ define work "{self._output_path}/libraries/work"
                 args += ["-gui"]
             else:
                 args += ["-access +r"]
+                if config.sim_options.get("incisive.init_files.before_run", []):
+                    args += [f"-input {config.sim_options.get("incisive.init_files.before_run", [])}"]
                 args += ['-input "@run"']
 
             if config.architecture_name is None:
