@@ -343,6 +343,7 @@ define work "{self._output_path}/libraries/work"
             # args += ['-rebuild']
             # args += ['-gdb']
             # args += ['-gdbelab']
+            args += ["-exit"]
             args += ["-errormax 10"]
             args += ["-nowarn WRMNZD"]
             args += ["-nowarn DLCPTH"]  # "cds.lib Invalid path"
