@@ -92,8 +92,9 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
         except (subprocess.CalledProcessError, FileNotFoundError):
             return None, None
 
-        # Example line: "TOOL:   xrun    21.09-s007"
-        match = re.search(r"xrun\s+(\d+)\.(\d+)", result.stdout)
+        # Example lines:  "TOOL:   xrun    21.09-s007"
+        #                 "TOOL:   xrun(x64)    25.03-s002"
+        match = re.search(r"xrun.*\s+(\d+)\.(\d+)", result.stdout)
         if not match:
             return None, None
 
