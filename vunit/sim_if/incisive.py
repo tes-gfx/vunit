@@ -189,19 +189,19 @@ define work "{self._output_path}/libraries/work"
         """
         if vhdl_standard == VHDL.STD_2002:
             opts = "-v200x -extv200x"
-            if self._version_major > 24:
+            if self._version_major >= 24:
                 opts += " -IEEE2008"
             return opts
 
         if vhdl_standard == VHDL.STD_2008:
             opts = "-v200x -extv200x"
-            if self._version_major > 24:
+            if self._version_major >= 24:
                 opts += " -IEEE2008"
             return opts
 
         if vhdl_standard == VHDL.STD_1993:
             opts = ""
-            if self._version_major > 24:
+            if self._version_major >= 24:
                 opts += "-v200x -IEEE2008"
             return opts
 
@@ -336,7 +336,7 @@ define work "{self._output_path}/libraries/work"
                 args += ["-elaborate"]
             args += ["-nocopyright"]
             args += ["-licqueue"]
-            if self._version_major > 24:
+            if self._version_major >= 24:
                 args += ["-IEEE2008"]
             # args += ['-dumpstack']
             # args += ['-gdbsh']
