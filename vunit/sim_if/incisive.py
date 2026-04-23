@@ -90,6 +90,7 @@ class IncisiveInterface(SimulatorInterface):  # pylint: disable=too-many-instanc
                 check=True
             )
         except (subprocess.CalledProcessError, FileNotFoundError):
+            raise RuntimeError("Could not find xrun. Please make sure that it is available in your environment.")
             return None, None
 
         # Example lines:  "TOOL:   xrun    21.09-s007"
